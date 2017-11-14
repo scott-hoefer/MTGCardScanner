@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<<<<<<< HEAD
     package="com.mobilecomputing.sbarth.mtgcardscanner">
+=======
+    package="com.mobilecomputing.shoefer.mtgcardscanner">
+>>>>>>> 7b50ac629dced2938d0cbfcc071c133b9052ab39
 
     <application
         android:allowBackup="true"
@@ -16,6 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<<<<<<< HEAD
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.mobilecomputing.sbarth.mtgcardscanner"
@@ -27,4 +32,8 @@
         </provider>
 
     </application>
+=======
+    </application>
+
+>>>>>>> 7b50ac629dced2938d0cbfcc071c133b9052ab39
 </manifest>
