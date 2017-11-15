@@ -16,9 +16,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import org.opencv.android.Utils;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import static com.mobilecomputing.sbarth.mtgcardscanner.R.id.imageView;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -163,6 +170,21 @@ public class MainActivity extends AppCompatActivity {
 //        } else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
 //        }
 //    }
+
+    private void detectEdges(Bitmap bitmap) {
+        Mat rgba = new Mat();
+        Utils.bitmapToMat(bitmap, rgba);
+
+        Mat edges = new Mat(rgba.size(), CvType.CV_8UC1);
+        Imgproc.cvtColor(rgba, edges, Imgproc.COLOR_RGB2GRAY, 4);
+        Imgproc.Canny(edges, edges, 80, 100);
+
+        // Don't do that at home or work it's for visualization purpose.
+//        BitmapHelper.showBitmap(this, bitmap, imageView);
+//        Bitmap resultBitmap = Bitmap.createBitmap(edges.cols(), edges.rows(), Bitmap.Config.ARGB_8888);
+//        Utils.matToBitmap(edges, resultBitmap);
+//        BitmapHelper.showBitmap(this, resultBitmap, detectEdgesImageView);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
