@@ -95,17 +95,6 @@ public class MainActivity extends AppCompatActivity {
         int pich = 285;
         int[][][] ch = new int[4][4][4];
         Bitmap image = BitmapFactory.decodeFile(f.getPath());
-//        while (true) {
-//            if (image == null) {
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//            else break;
-//        }
         for(int x = 0; x < picw ; x++)
             for(int y = 0; y < pich ; y++) {
                 int pixel = image.getPixel(x, y);
@@ -148,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
                 else break;
             }
             Bitmap resized = Bitmap.createScaledBitmap(currentImage, 200, 285, true);
+            EdgeDetection ed = new EdgeDetection();
+            ed.detectEdges(resized);
             try {
                 FileOutputStream fos = new FileOutputStream(f);
                 resized.compress(Bitmap.CompressFormat.PNG, 100, fos);
@@ -157,33 +148,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         Toast.makeText(this, "image resized", Toast.LENGTH_SHORT).show();
-    }
-
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//
-//        // handle the camera request returns and handle back button in camera.
-//
-//        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_CANCELED) {
-//            Toast toast = Toast.makeText(this, "Canceled, no picture taken.", 1000);
-//            toast.show();
-//            return;
-//        } else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-//        }
-//    }
-
-    private void detectEdges(Bitmap bitmap) {
-        Mat rgba = new Mat();
-        Utils.bitmapToMat(bitmap, rgba);
-
-        Mat edges = new Mat(rgba.size(), CvType.CV_8UC1);
-        Imgproc.cvtColor(rgba, edges, Imgproc.COLOR_RGB2GRAY, 4);
-        Imgproc.Canny(edges, edges, 80, 100);
-
-        // Don't do that at home or work it's for visualization purpose.
-//        BitmapHelper.showBitmap(this, bitmap, imageView);
-//        Bitmap resultBitmap = Bitmap.createBitmap(edges.cols(), edges.rows(), Bitmap.Config.ARGB_8888);
-//        Utils.matToBitmap(edges, resultBitmap);
-//        BitmapHelper.showBitmap(this, resultBitmap, detectEdgesImageView);
     }
 
     @Override
