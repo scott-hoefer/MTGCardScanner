@@ -137,8 +137,8 @@ public class MainActivity extends AppCompatActivity {
                 else break;
             }
             Bitmap resized = Bitmap.createScaledBitmap(currentImage, 200, 285, true);
-            EdgeDetection ed = new EdgeDetection();
-            ed.detectEdges(resized);
+//            EdgeDetection ed = new EdgeDetection();
+//            ed.detectEdges(resized);
             try {
                 FileOutputStream fos = new FileOutputStream(f);
                 resized.compress(Bitmap.CompressFormat.PNG, 100, fos);
@@ -158,14 +158,15 @@ public class MainActivity extends AppCompatActivity {
         btnTakePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dispatchTakePictureIntent();
-                resizeImage(image);
-                try {
-                    processImage(image);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
+//                dispatchTakePictureIntent();
+//                resizeImage(image);
+//                try {
+//                    processImage(image);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+                Intent intent = new Intent(MainActivity.this, OpenCVCamera.class);
+                startActivity(intent);
             }
         });
     }

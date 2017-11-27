@@ -12,6 +12,7 @@ import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
 
 public class OpenCVCamera extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
 
@@ -97,7 +98,9 @@ public class OpenCVCamera extends AppCompatActivity implements CameraBridgeViewB
 
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+        Mat result = new Mat();
         mRgba = inputFrame.rgba();
-        return mRgba;
+        Imgproc.Canny(mRgba, result, 40, 120);
+        return result;
     }
 }
