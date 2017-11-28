@@ -137,8 +137,8 @@ public class MainActivity extends AppCompatActivity {
                 else break;
             }
             Bitmap resized = Bitmap.createScaledBitmap(currentImage, 200, 285, true);
-//            EdgeDetection ed = new EdgeDetection();
-//            ed.detectEdges(resized);
+            EdgeDetection ed = new EdgeDetection();
+            ed.detectEdges(currentImage);
             try {
                 FileOutputStream fos = new FileOutputStream(f);
                 resized.compress(Bitmap.CompressFormat.PNG, 100, fos);
