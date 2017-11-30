@@ -28,7 +28,8 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".OpenCVCamera">
+        <activity android:name=".OpenCVCamera"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
         </activity>
     </application>
 

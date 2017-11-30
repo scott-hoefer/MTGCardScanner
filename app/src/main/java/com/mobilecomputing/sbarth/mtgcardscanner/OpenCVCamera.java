@@ -2,11 +2,16 @@ package com.mobilecomputing.sbarth.mtgcardscanner;
 
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceView;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Toast;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -28,6 +33,7 @@ import org.opencv.video.BackgroundSubtractor;
 import org.opencv.video.BackgroundSubtractorMOG2;
 import org.opencv.video.Video;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +42,7 @@ public class OpenCVCamera extends AppCompatActivity implements CameraBridgeViewB
     private static String TAG = "OpenCVCamera";
     JavaCameraView javaCameraView;
     Mat mRgba;
+    Rect rect;
     BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
@@ -69,10 +76,20 @@ public class OpenCVCamera extends AppCompatActivity implements CameraBridgeViewB
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_cvcamera);
 
+        Toast.makeText(this, "Camera opened", Toast.LENGTH_SHORT).show();
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         javaCameraView = (JavaCameraView) findViewById(R.id.java_camera_view);
         javaCameraView.setVisibility(SurfaceView.VISIBLE);
         javaCameraView.setCvCameraViewListener(this);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        javaCameraView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                screenClick();
+            }
+        });
     }
 
     @Override
@@ -116,19 +133,18 @@ public class OpenCVCamera extends AppCompatActivity implements CameraBridgeViewB
 
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-        BackgroundSubtractorMOG2 bgSub= Video.createBackgroundSubtractorMOG2();
         Mat result = new Mat();
         Mat mask = new Mat();
         List<MatOfPoint> contours = new ArrayList<>();
         Mat hierarchy = new Mat();
         mRgba = inputFrame.rgba();
-        //Imgproc.cvtColor(mRgba, mRgba, Imgproc.COLOR_BGR2GRAY);
         Imgproc.Canny(mRgba, result, 40, 120);
         Imgproc.GaussianBlur(result, result, new Size(9,9), 2, 2);
         Imgproc.findContours(result, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE, new Point(0,0));
         Imgproc.drawContours(mask, contours, -1, new Scalar(0, 255, 0), 1);
         hierarchy.release();
-        //bgSub.apply(mRgba, mask);
+
+        Imgproc.rectangle(mRgba, new Point(300,100), new Point(1500, 1000), new Scalar(0, 255, 0, 255), 6);
 
         for ( int contourIdx=0; contourIdx < contours.size(); contourIdx++ )
         {
@@ -143,12 +159,52 @@ public class OpenCVCamera extends AppCompatActivity implements CameraBridgeViewB
             MatOfPoint points = new MatOfPoint( approxCurve.toArray() );
 
             // Get bounding rect of contour
-            Rect rect = Imgproc.boundingRect(points);
+            rect = Imgproc.boundingRect(points);
 
-            Imgproc.rectangle(mRgba, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(255, 0, 0, 255), 3);
+            //Imgproc.rectangle(mRgba, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(255, 0, 0, 255), 3);
+            Log.i("rect pts", "pt 1 x:" + rect.x + " pt 1 y: " + rect.y );
+            Log.i("rect pts width", "rect width: " + rect.width + " rect height: " + rect.height );
         }
-        Bitmap card = Bitmap.createBitmap(result.cols(), result.rows(), Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(result, card);
+//        Bitmap card = Bitmap.createBitmap(result.cols(), result.rows(), Bitmap.Config.ARGB_8888);
+//        Utils.matToBitmap(result, card);
         return mRgba;
+    }
+
+    public void screenClick(){
+        //Mat cardMat = new Mat(mRgba, rect);
+        //Bitmap cardBmp = Bitmap.createBitmap(cardMat.cols(), cardMat.rows(), Bitmap.Config.ARGB_8888);
+        //Utils.matToBitmap(cardMat, cardBmp);
+        Rect r = new Rect(300, 100, 1200, 900);
+        Mat cm = new Mat(mRgba, r);
+        Bitmap bmp = Bitmap.createBitmap(cm.cols(), cm.rows(), Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(cm, bmp);
+        Toast.makeText(this, "Creating Histogram...", Toast.LENGTH_SHORT).show();
+        try {
+            processImage(bmp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int[][][] processImage(Bitmap image) throws Exception {
+        int picw = image.getWidth();
+        int pich = image.getHeight();
+        int[][][] ch = new int[4][4][4];
+        //Bitmap image = BitmapFactory.decodeFile(f.getPath());
+        for(int x = 0; x < picw ; x++)
+            for(int y = 0; y < pich ; y++) {
+                int pixel = image.getPixel(x, y);
+                int red = Color.red(pixel);
+                int blue = Color.blue(pixel);
+                int green = Color.green(pixel);
+                int alpha = Color.alpha(pixel);
+                ch[red / 128][green / 128][blue / 128]++;
+            }
+        for(int i = 0; i < ch.length; i++)
+            for(int j = 0; j < ch[i].length; j++)
+                for(int p = 0; p < ch[i][j].length; p++)
+                    Log.i("histogram", "t[" + i + "][" + j + "][" + p + "] = " + ch[i][j][p]);
+        Toast.makeText(this, "Finished processing image", Toast.LENGTH_SHORT).show();
+        return ch;
     }
 }
