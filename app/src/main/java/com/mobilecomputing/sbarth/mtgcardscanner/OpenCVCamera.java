@@ -1,5 +1,7 @@
 package com.mobilecomputing.sbarth.mtgcardscanner;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -33,7 +35,11 @@ import org.opencv.video.BackgroundSubtractor;
 import org.opencv.video.BackgroundSubtractorMOG2;
 import org.opencv.video.Video;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -178,33 +184,22 @@ public class OpenCVCamera extends AppCompatActivity implements CameraBridgeViewB
         Mat cm = new Mat(mRgba, r);
         Bitmap bmp = Bitmap.createBitmap(cm.cols(), cm.rows(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(cm, bmp);
-        Toast.makeText(this, "Creating Histogram...", Toast.LENGTH_SHORT).show();
+
+        String filename = "cardImage.jpg";
         try {
-            processImage(bmp);
-        } catch (Exception e) {
+            FileOutputStream stream = this.openFileOutput(filename, Context.MODE_PRIVATE);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            //clean up
+            stream.close();
+            bmp.recycle();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
-    }
 
-    public int[][][] processImage(Bitmap image) throws Exception {
-        int picw = image.getWidth();
-        int pich = image.getHeight();
-        int[][][] ch = new int[4][4][4];
-        //Bitmap image = BitmapFactory.decodeFile(f.getPath());
-        for(int x = 0; x < picw ; x++)
-            for(int y = 0; y < pich ; y++) {
-                int pixel = image.getPixel(x, y);
-                int red = Color.red(pixel);
-                int blue = Color.blue(pixel);
-                int green = Color.green(pixel);
-                int alpha = Color.alpha(pixel);
-                ch[red / 128][green / 128][blue / 128]++;
-            }
-        for(int i = 0; i < ch.length; i++)
-            for(int j = 0; j < ch[i].length; j++)
-                for(int p = 0; p < ch[i][j].length; p++)
-                    Log.i("histogram", "t[" + i + "][" + j + "][" + p + "] = " + ch[i][j][p]);
-        Toast.makeText(this, "Finished processing image", Toast.LENGTH_SHORT).show();
-        return ch;
+        Intent intent = new Intent(OpenCVCamera.this, SearchResults.class);
+        intent.putExtra("image", filename);
+        startActivity(intent);
     }
 }
