@@ -10,6 +10,14 @@ package com.mobilecomputing.sbarth.mtgcardscanner;
  * and open the template in the editor.
  */
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.Handler;
+import android.util.Log;
+import android.widget.Toast;
+
+import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,8 +37,8 @@ import java.util.logging.Logger;
  */
 public class ImagePreprocessor {
 
-    static int CARD_WIDTH = 200;
-    static int CARD_HEIGHT = 285;
+    static int CARD_WIDTH = 265;
+    static int CARD_HEIGHT = 370;
 
     public static int compareImages(int[][][] compImg, int[][][] baseImg) {
         int delta = 0;
@@ -43,10 +52,101 @@ public class ImagePreprocessor {
         return delta;
     }
 
-    public static ArrayList<HistogramTuple> getHistogramRanking(String filename, String csv) {
-        ArrayList<HistogramTuple> sorted = new ArrayList();
+    public static ArrayList<HistogramTuple> readHistogramCSV(String file) {
+        ArrayList<HistogramTuple> result = new ArrayList();
+        Scanner sc;
+        try {
+            sc = new Scanner(new File(file));
+            while (sc.hasNext()) {
+                String line = sc.nextLine();
+                String[] split = line.split(",", 65);
+                int[][][] hist = new int[4][4][4];
+                int tracker = 1;
+                for (int i = 0 ; i < hist.length; i++) {
+                    for (int j = 0 ; j < hist[0].length ; j++) {
+                        for (int k = 0 ; k < hist[0][0].length ; k++) {
+                            hist[i][j][k] = Integer.parseInt(split[tracker]);
+                            tracker++;
+                        }
+                    }
+                }
+                result.add(new HistogramTuple(split[0], hist));
+            }
+            sc.close();
+        } catch (FileNotFoundException ex) {
+            System.err.println("There was a problem opening the filereader");
+            System.err.println(ex.toString());
+        }
+        return result;
+    }
 
+    public static int[][][] processImage(File f) throws Exception {
+        int[][][] ch = new int[4][4][4];
+        Bitmap image = BitmapFactory.decodeFile(f.getPath());
+        for(int x = 0; x < image.getWidth() ; x++)
+            for(int y = 0; y < image.getHeight() ; y++) {
+                int pixel = image.getPixel(x, y);
+                int red = Color.red(pixel);
+                int blue = Color.blue(pixel);
+                int green = Color.green(pixel);
+                int alpha = Color.alpha(pixel);
+//                int alpha = (color & 0xff000000) >> 24;
+//                int red = (color & 0x00ff0000) >> 16;
+//                int green = (color & 0x0000ff00) >> 8;
+//                int blue = color & 0x000000ff;
+                ch[red / 64][green / 64][blue / 64]++;
+            }
+//        for(int i = 0; i < ch.length; i++)
+//            for(int j = 0; j < ch[i].length; j++)
+//                for(int p = 0; p < ch[i][j].length; p++)
+//                    Log.i("processing image", "t[" + i + "][" + j + "][" + p + "] = " + ch[i][j][p]);
+        return ch;
+    }
+
+    public static ArrayList<HistogramTuple> getHistogramRanking(String filename, String csv) {
+        ArrayList<HistogramTuple> unsorted = new ArrayList();
+        unsorted = readHistogramCSV(csv);
+        ArrayList<HistogramTuple> sorted = null;
+        try {
+            sorted = HistogramTuple.rank(processImage(new File(filename)), unsorted);
+        } catch (Exception ex) {
+            System.err.println("There was a problem opening the image file: " + filename);
+            System.err.println(ex.toString());
+        }
         return sorted;
+    }
+
+    private void resizeImage(File f) {
+        Bitmap currentImage;
+        if (f != null) {
+            while (true) {
+                currentImage = BitmapFactory.decodeFile(f.getAbsolutePath());
+                if (currentImage == null) {
+                    try {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+
+                            }
+                        }, 1000);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                else break;
+            }
+            Bitmap resized = Bitmap.createScaledBitmap(currentImage, 200, 285, true);
+            EdgeDetection ed = new EdgeDetection();
+            ed.detectEdges(currentImage);
+            try {
+                FileOutputStream fos = new FileOutputStream(f);
+                resized.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                fos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 //    public static ArrayList<ArrayList<String>> getPhashRanking(String filename, String csv) {

@@ -1,5 +1,9 @@
 package com.mobilecomputing.sbarth.mtgcardscanner;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+
 /**
  * Created by sam barth on 11/30/2017.
  */
@@ -8,6 +12,7 @@ public class HistogramTuple {
 
     private String name;
     private int[][][] hist;
+    private int delta;
 
     HistogramTuple(String name, int[][][] hist) {
         this.name = name;
@@ -40,5 +45,25 @@ public class HistogramTuple {
             }
         }
         return sb.toString();
+    }
+
+    public static ArrayList<HistogramTuple> rank(HistogramTuple search, Collection<HistogramTuple> database) {
+        ArrayList<HistogramTuple> result = new ArrayList();
+        for (HistogramTuple item : database) {
+            item.delta = ImagePreprocessor.compareImages(item.hist, search.hist);
+            result.add(item);
+        }
+        result.sort(new Comparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                return ((Integer) ((HistogramTuple) o1).delta).compareTo((Integer) ((HistogramTuple) o2).delta);
+            }
+
+        });
+        return result;
+    }
+
+    public static ArrayList<HistogramTuple> rank(int[][][] search, Collection<HistogramTuple> database) {
+        return HistogramTuple.rank(new HistogramTuple("", search), database);
     }
 }
