@@ -149,6 +149,27 @@ public class ImagePreprocessor {
         }
     }
 
+    public static int[][][] processImage(Bitmap image) throws Exception {
+        int picw = image.getWidth();
+        int pich = image.getHeight();
+        int[][][] ch = new int[4][4][4];
+        //Bitmap image = BitmapFactory.decodeFile(f.getPath());
+        for(int x = 0; x < picw ; x++)
+            for(int y = 0; y < pich ; y++) {
+                int pixel = image.getPixel(x, y);
+                int red = Color.red(pixel);
+                int blue = Color.blue(pixel);
+                int green = Color.green(pixel);
+                int alpha = Color.alpha(pixel);
+                ch[red / 128][green / 128][blue / 128]++;
+            }
+        for(int i = 0; i < ch.length; i++)
+            for(int j = 0; j < ch[i].length; j++)
+                for(int p = 0; p < ch[i][j].length; p++)
+                    Log.i("histogram", "t[" + i + "][" + j + "][" + p + "] = " + ch[i][j][p]);
+        return ch;
+    }
+
 //    public static ArrayList<ArrayList<String>> getPhashRanking(String filename, String csv) {
 //        RadialHash search;
 //        String result = "";
