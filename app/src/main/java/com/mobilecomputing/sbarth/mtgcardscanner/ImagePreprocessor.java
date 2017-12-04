@@ -53,6 +53,23 @@ public class ImagePreprocessor {
         return delta;
     }
 
+    public static int compareImages(int[][][] compImg, int[][][] referenceImage, int c) {
+        CComparisonObject co = new CComparisonObject(c, compImg);
+        return compareImages(compImg, referenceImage, co);
+    }
+
+    public static int compareImages(int[][][] compImg, int[][][] referenceImage, CComparisonObject c) {
+        int delta = 0;
+        ArrayList<Tuple_RGB_bin> bins = c.getBins();
+        for (Tuple_RGB_bin bin : bins) {
+            int r = bin.getR();
+            int b = bin.getB();
+            int g = bin.getG();
+            delta += referenceImage[r][b][g];
+        }
+        return delta;
+    }
+
     public static ArrayList<HistogramTuple> readHistogramCSV(Scanner sc) {
         ArrayList<HistogramTuple> result = new ArrayList();
         while (sc.hasNext()) {
