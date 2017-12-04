@@ -92,8 +92,6 @@ public class SearchResults extends AppCompatActivity implements AdapterView.OnIt
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(SearchResults.this, CardImage.class);
-        intent.putExtra("cardID", id);
-        intent.putExtra("pos", position);
         String cardName = (String) ranking.getItemAtPosition(position);
         intent.putExtra("cardName", cardName);
         Log.i("cardName", cardName);
