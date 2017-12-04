@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -19,7 +20,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class SearchResults extends AppCompatActivity {
+public class SearchResults extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     ListView ranking;
     Button btnReturnMain;
@@ -42,6 +43,7 @@ public class SearchResults extends AppCompatActivity {
         });
 
         ranking = (ListView) findViewById(R.id.rankingsListView);
+        ranking.setOnItemClickListener(this);
 
 //        setContentView(R.layout.activity_search_results);
         Toast.makeText(this, "Creating Histogram...", Toast.LENGTH_SHORT).show();
@@ -85,5 +87,16 @@ public class SearchResults extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(SearchResults.this, CardImage.class);
+        intent.putExtra("cardID", id);
+        intent.putExtra("pos", position);
+        String cardName = (String) ranking.getItemAtPosition(position);
+        intent.putExtra("cardName", cardName);
+        Log.i("cardName", cardName);
+        startActivity(intent);
     }
 }

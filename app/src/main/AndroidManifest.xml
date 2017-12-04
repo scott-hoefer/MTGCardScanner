@@ -31,8 +31,9 @@
 
         <activity
             android:name=".OpenCVCamera"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
-        <activity android:name=".SearchResults"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity android:name=".SearchResults" />
+        <activity android:name=".CardImage"></activity>
     </application>
 
 </manifest>

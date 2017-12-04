@@ -19,9 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:text="Something"
-        android:textIsSelectable="true"/>
-
-
+        android:textIsSelectable="true"
+        android:clickable="true"/>
 
 
     <Button
