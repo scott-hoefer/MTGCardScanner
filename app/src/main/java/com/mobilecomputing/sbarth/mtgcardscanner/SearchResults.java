@@ -3,7 +3,6 @@ package com.mobilecomputing.sbarth.mtgcardscanner;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,11 +11,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.FileInputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -65,7 +61,7 @@ public class SearchResults extends AppCompatActivity implements AdapterView.OnIt
     }
 
     private void displayRankings() {
-//        InputStream i = getResources().openRawResource(getResources().getIdentifier("CN2-cardart-chist", "carddata", getPackageName()));
+//        InputStream i = getResources().openRawResource(getResources().getIdentifier("cn2-cardart-chist", "carddata", getPackageName()));
 //        Uri u = Uri.parse("android.resource://mobilecomputing.sbarth.mtgcardscanner/raw/cn2_cardart_chist.csv");
 //        Log.i("uri path", u.getPath());
         Scanner sc = new Scanner(getResources().openRawResource(R.raw.cn2_cardart_chist));
@@ -92,7 +88,8 @@ public class SearchResults extends AppCompatActivity implements AdapterView.OnIt
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(SearchResults.this, CardImage.class);
-        String cardName = (String) ranking.getItemAtPosition(position);
+        HistogramTuple ht = (HistogramTuple) ranking.getItemAtPosition(position);
+        String cardName = ht.getName();
         intent.putExtra("cardName", cardName);
         Log.i("cardName", cardName);
         startActivity(intent);
