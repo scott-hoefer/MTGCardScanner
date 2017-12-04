@@ -91,7 +91,6 @@ public class SearchResults extends AppCompatActivity implements AdapterView.OnIt
         HistogramTuple ht = (HistogramTuple) ranking.getItemAtPosition(position);
         String cardName = ht.getName();
         intent.putExtra("cardName", cardName);
-        Log.i("cardName", cardName);
         startActivity(intent);
     }
 }
