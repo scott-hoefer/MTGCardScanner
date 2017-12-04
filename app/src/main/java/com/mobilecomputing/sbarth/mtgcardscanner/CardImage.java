@@ -26,4 +26,19 @@ public class CardImage extends AppCompatActivity {
         TextView t = (TextView) findViewById(R.id.nameTextView);
         t.setText(name);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }
