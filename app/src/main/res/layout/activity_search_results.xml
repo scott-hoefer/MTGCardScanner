@@ -13,12 +13,16 @@
     android:paddingTop="16dp"
     >
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_weight="9"
+    <ListView
+        android:id="@+id/rankingsListView"
+        android:layout_weight="10"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        />
+        android:text="Something"
+        android:textIsSelectable="true"/>
+
+
+
 
     <Button
         android:layout_width="match_parent"

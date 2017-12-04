@@ -18,6 +18,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -52,39 +53,32 @@ public class ImagePreprocessor {
         return delta;
     }
 
-    public static ArrayList<HistogramTuple> readHistogramCSV(String file) {
+    public static ArrayList<HistogramTuple> readHistogramCSV(Scanner sc) {
         ArrayList<HistogramTuple> result = new ArrayList();
-        Scanner sc;
-        try {
-            sc = new Scanner(new File(file));
-            while (sc.hasNext()) {
-                String line = sc.nextLine();
-                String[] split = line.split(",", 65);
-                int[][][] hist = new int[4][4][4];
-                int tracker = 1;
-                for (int i = 0 ; i < hist.length; i++) {
-                    for (int j = 0 ; j < hist[0].length ; j++) {
-                        for (int k = 0 ; k < hist[0][0].length ; k++) {
-                            hist[i][j][k] = Integer.parseInt(split[tracker]);
-                            tracker++;
-                        }
+        while (sc.hasNext()) {
+            String line = sc.nextLine();
+            String[] split = line.split(",", 65);
+            int[][][] hist = new int[4][4][4];
+            int tracker = 1;
+            for (int i = 0; i < hist.length; i++) {
+                for (int j = 0; j < hist[0].length; j++) {
+                    for (int k = 0; k < hist[0][0].length; k++) {
+                        hist[i][j][k] = Integer.parseInt(split[tracker]);
+                        tracker++;
                     }
                 }
-                result.add(new HistogramTuple(split[0], hist));
             }
-            sc.close();
-        } catch (FileNotFoundException ex) {
-            System.err.println("There was a problem opening the filereader");
-            System.err.println(ex.toString());
+            result.add(new HistogramTuple(split[0], hist));
         }
+        sc.close();
         return result;
     }
 
     public static int[][][] processImage(File f) throws Exception {
         int[][][] ch = new int[4][4][4];
         Bitmap image = BitmapFactory.decodeFile(f.getPath());
-        for(int x = 0; x < image.getWidth() ; x++)
-            for(int y = 0; y < image.getHeight() ; y++) {
+        for (int x = 0; x < image.getWidth(); x++)
+            for (int y = 0; y < image.getHeight(); y++) {
                 int pixel = image.getPixel(x, y);
                 int red = Color.red(pixel);
                 int blue = Color.blue(pixel);
@@ -103,20 +97,20 @@ public class ImagePreprocessor {
         return ch;
     }
 
-    public static ArrayList<HistogramTuple> getHistogramRanking(String filename, String csv) {
+    public static ArrayList<HistogramTuple> getHistogramRanking(Bitmap bmp, Scanner sc) {
         ArrayList<HistogramTuple> unsorted = new ArrayList();
-        unsorted = readHistogramCSV(csv);
+        unsorted = readHistogramCSV(sc);
         ArrayList<HistogramTuple> sorted = null;
         try {
-            sorted = HistogramTuple.rank(processImage(new File(filename)), unsorted);
+            sorted = HistogramTuple.rank(processImage(bmp), unsorted);
         } catch (Exception ex) {
-            System.err.println("There was a problem opening the image file: " + filename);
+            System.err.println("There was a problem opening the image file");
             System.err.println(ex.toString());
         }
         return sorted;
     }
 
-    private void resizeImage(File f) {
+    public static void resizeImage(File f) {
         Bitmap currentImage;
         if (f != null) {
             while (true) {
@@ -133,8 +127,7 @@ public class ImagePreprocessor {
                         e.printStackTrace();
                     }
 
-                }
-                else break;
+                } else break;
             }
             Bitmap resized = Bitmap.createScaledBitmap(currentImage, 200, 285, true);
             EdgeDetection ed = new EdgeDetection();
@@ -147,6 +140,11 @@ public class ImagePreprocessor {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static Bitmap resizeImage(Bitmap currentImage, int w, int h) {
+        Bitmap resized = Bitmap.createScaledBitmap(currentImage, w, h, true);
+        return resized;
     }
 
     public static int[][][] processImage(Bitmap image) throws Exception {

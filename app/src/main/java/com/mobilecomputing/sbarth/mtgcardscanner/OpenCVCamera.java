@@ -82,8 +82,6 @@ public class OpenCVCamera extends AppCompatActivity implements CameraBridgeViewB
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_cvcamera);
 
-        Toast.makeText(this, "Camera opened", Toast.LENGTH_SHORT).show();
-
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         javaCameraView = (JavaCameraView) findViewById(R.id.java_camera_view);
@@ -150,7 +148,8 @@ public class OpenCVCamera extends AppCompatActivity implements CameraBridgeViewB
         Imgproc.drawContours(mask, contours, -1, new Scalar(0, 255, 0), 1);
         hierarchy.release();
 
-        Imgproc.rectangle(mRgba, new Point(300,100), new Point(1500, 1000), new Scalar(0, 255, 0, 255), 6);
+        Imgproc.rectangle(mRgba, new Point(300,100), new Point((300 + 3*370), (100 + 3*265)), new Scalar(0, 255, 0, 255), 6);
+        Imgproc.rectangle(mRgba, new Point(423,160), new Point((423 + 3*164), (160 + 3*224)), new Scalar(255, 0, 0, 255), 6);
 
         for ( int contourIdx=0; contourIdx < contours.size(); contourIdx++ )
         {
@@ -180,10 +179,11 @@ public class OpenCVCamera extends AppCompatActivity implements CameraBridgeViewB
         //Mat cardMat = new Mat(mRgba, rect);
         //Bitmap cardBmp = Bitmap.createBitmap(cardMat.cols(), cardMat.rows(), Bitmap.Config.ARGB_8888);
         //Utils.matToBitmap(cardMat, cardBmp);
-        Rect r = new Rect(300, 100, 1200, 900);
+        Rect r = new Rect(423, 160, 492, 672);
         Mat cm = new Mat(mRgba, r);
         Bitmap bmp = Bitmap.createBitmap(cm.cols(), cm.rows(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(cm, bmp);
+        bmp = ImagePreprocessor.resizeImage(bmp, 164, 224);
 
         String filename = "cardImage.jpg";
         try {

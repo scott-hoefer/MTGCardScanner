@@ -38,10 +38,13 @@ public class HistogramTuple {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(name + ":\n");
-        for (int i = 0; i < hist.length; i++) {
-            for (int j = 0 ; j < hist[0].length; j++) {
-                for(int k = 0 ; j < hist[0][0].length; k++)
-                    sb.append("    [" + i + "][" + j + "][" + k + "]" + " = " + hist[i][j][k] + "\n");
+        if ((Integer) delta != null) { sb.append(" , delta: " + Integer.toString(delta)); }
+        else {
+            for (int i = 0; i < hist.length; i++) {
+                for (int j = 0; j < hist[0].length; j++) {
+                    for (int k = 0; k < hist[0][0].length; k++)
+                        sb.append("    [" + i + "][" + j + "][" + k + "]" + " = " + hist[i][j][k] + "\n");
+                }
             }
         }
         return sb.toString();
