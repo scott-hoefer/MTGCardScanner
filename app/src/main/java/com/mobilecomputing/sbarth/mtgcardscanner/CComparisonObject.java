@@ -22,6 +22,7 @@ public class CComparisonObject {
     CComparisonObject(int c, int[][][] hist) {
         this.c = c;
         this.hist = hist;
+        setBins();
     }
 
     public ArrayList<Tuple_RGB_bin> getBins() {

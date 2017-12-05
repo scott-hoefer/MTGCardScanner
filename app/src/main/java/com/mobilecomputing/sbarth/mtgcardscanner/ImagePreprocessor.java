@@ -65,7 +65,7 @@ public class ImagePreprocessor {
             int r = bin.getR();
             int b = bin.getB();
             int g = bin.getG();
-            delta += referenceImage[r][b][g];
+            delta += java.lang.Math.abs(referenceImage[r][g][b] - compImg[r][g][b]);
         }
         return delta;
     }
