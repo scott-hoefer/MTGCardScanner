@@ -1,5 +1,7 @@
 package com.mobilecomputing.sbarth.mtgcardscanner;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -50,11 +52,17 @@ public class HistogramTuple {
         return sb.toString();
     }
 
+    public void setDelta(int d) {this.delta = d;}
+
+    public int getDelta() {return delta;}
+
+
     public static ArrayList<HistogramTuple> rank(HistogramTuple search, Collection<HistogramTuple> database) {
         ArrayList<HistogramTuple> result = new ArrayList();
-        for (HistogramTuple item : database) {
-            item.delta = ImagePreprocessor.compareImages(item.hist, search.hist, 10);
-            result.add(item);
+        for (HistogramTuple reference : database) {
+            reference.setDelta(ImagePreprocessor.compareImages(search.hist, reference.hist, 7));
+            Log.i("referencedelta", Integer.toString(reference.getDelta()));
+            result.add(reference);
         }
         result.sort(new Comparator() {
             @Override
