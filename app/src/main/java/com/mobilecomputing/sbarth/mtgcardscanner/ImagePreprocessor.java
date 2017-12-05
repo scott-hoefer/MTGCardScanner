@@ -194,7 +194,6 @@ public class ImagePreprocessor {
 
     public static int[][][][] processImageToJH1(Bitmap image) throws Exception {
         int[][][][] ch = new int[4][4][4][5];
-//        BufferedImage image = ImageIO.read(new File("goblinguide2resized.jpg"));
         Mat edgesMat = new Mat();
         Bitmap edges = null;
         Utils.bitmapToMat(image, edgesMat);
@@ -228,11 +227,6 @@ public class ImagePreprocessor {
                 }
                 ch[red / 64][green / 64][blue / 64][edgeDensity]++;
             }
-
-//        for(int i = 0; i < ch.length; i++)
-//            for(int j = 0; j < ch[i].length; j++)
-//                for(int p = 0; p < ch[i][j].length; p++)
-//                    System.out.println("t[" + i + "][" + j + "][" + p + "] = " + ch[i][j][p]);
         return ch;
     }
 

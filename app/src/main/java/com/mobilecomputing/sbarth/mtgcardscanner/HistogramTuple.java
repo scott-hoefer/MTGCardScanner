@@ -61,7 +61,7 @@ public class HistogramTuple {
         ArrayList<HistogramTuple> result = new ArrayList();
         for (HistogramTuple reference : database) {
             reference.setDelta(ImagePreprocessor.compareImages(search.hist, reference.hist, 7));
-            Log.i("referencedelta", Integer.toString(reference.getDelta()));
+//            Log.i("referencedelta", Integer.toString(reference.getDelta()));
             result.add(reference);
         }
         result.sort(new Comparator() {
