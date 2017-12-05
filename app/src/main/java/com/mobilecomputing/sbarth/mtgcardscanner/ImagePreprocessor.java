@@ -17,6 +17,10 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.opencv.android.Utils;
+import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
+
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -53,22 +57,27 @@ public class ImagePreprocessor {
         return delta;
     }
 
-    public static int compareImages(int[][][] compImg, int[][][] referenceImage, int c) {
-        CComparisonObject co = new CComparisonObject(c, compImg);
-        return compareImages(compImg, referenceImage, co);
+    public static int compareImages(int[][][] searchHist, int[][][] referenceHist, int c) {
+        CComparisonObject co = new CComparisonObject(c, searchHist);
+        return compareImages(searchHist, referenceHist, co);
     }
 
-    public static int compareImages(int[][][] compImg, int[][][] referenceImage, CComparisonObject c) {
+    public static int compareImages(int[][][] searchHist, int[][][] referenceHist, CComparisonObject c) {
         int delta = 0;
         ArrayList<Tuple_RGB_bin> bins = c.getBins();
         for (Tuple_RGB_bin bin : bins) {
             int r = bin.getR();
             int b = bin.getB();
             int g = bin.getG();
-            delta += java.lang.Math.abs(referenceImage[r][g][b] - compImg[r][g][b]);
+            delta += java.lang.Math.abs(referenceHist[r][g][b] - searchHist[r][g][b]);
         }
         return delta;
     }
+
+//    public static int compareImages(int[][][] searchHist, int[][][] referenceHist, int c) {
+//        int delta = 0;
+//        for ( bin : searchHist)
+//    }
 
     public static ArrayList<HistogramTuple> readHistogramCSV(Scanner sc) {
         ArrayList<HistogramTuple> result = new ArrayList();
@@ -87,7 +96,6 @@ public class ImagePreprocessor {
             }
             result.add(new HistogramTuple(split[0], hist));
         }
-        sc.close();
         return result;
     }
 
@@ -175,13 +183,61 @@ public class ImagePreprocessor {
                 int blue = Color.blue(pixel);
                 int green = Color.green(pixel);
                 int alpha = Color.alpha(pixel);
-                ch[red / 128][green / 128][blue / 128]++;
+                ch[red / 64][green / 64][blue / 64]++;
             }
         for(int i = 0; i < ch.length; i++)
             for(int j = 0; j < ch[i].length; j++)
                 for(int p = 0; p < ch[i][j].length; p++)
                     Log.i("histogram", "t[" + i + "][" + j + "][" + p + "] = " + ch[i][j][p]);
         return ch;
+    }
+
+    public static int[][][][] processImageToJH1(Bitmap image) throws Exception {
+        int[][][][] ch = new int[4][4][4][5];
+//        BufferedImage image = ImageIO.read(new File("goblinguide2resized.jpg"));
+        Mat edgesMat = new Mat();
+        Bitmap edges = null;
+        Utils.bitmapToMat(image, edgesMat);
+        Imgproc.Canny(edgesMat, edgesMat, 40, 120);  //get the edges of the image using Canny Edge Detection Algorithm
+        Utils.matToBitmap(edgesMat, edges);
+        for(int x = 0; x < image.getWidth(); x++)
+            for(int y = 0; y < image.getHeight(); y++) {
+                int p = image.getPixel(x, y);
+                int red = Color.red(p);
+                int green = Color.green(p);
+                int blue = Color.blue(p);
+
+                int pixel = edges.getPixel(x, y);
+                int numEdges = 0;
+                int totalPixels = 0;
+                int edgeDensity = 0;
+                for (int i = x - 2 ; i < x + 3 ; i++) {
+                    for (int j = y - 2 ; j < y + 3 ; j++) {
+                        if (i < 0 || y < 0) { continue; }
+                        else if (i >= image.getWidth() || y >= image.getHeight()) { continue; }
+                        else {
+                            if (!isBlack(pixel)) {
+                                numEdges++;
+                            }
+                            totalPixels++;
+                        }
+                    }
+                }
+                if (totalPixels != 0) {
+                    edgeDensity = (int) java.lang.Math.ceil((totalPixels / numEdges ) * 5);
+                }
+                ch[red / 64][green / 64][blue / 64][edgeDensity]++;
+            }
+
+//        for(int i = 0; i < ch.length; i++)
+//            for(int j = 0; j < ch[i].length; j++)
+//                for(int p = 0; p < ch[i][j].length; p++)
+//                    System.out.println("t[" + i + "][" + j + "][" + p + "] = " + ch[i][j][p]);
+        return ch;
+    }
+
+    private static boolean isBlack(int pix) {
+        return Color.red(pix) == 0 && Color.green(pix) == 0 && Color.blue(0) == 0;
     }
 
 //    public static ArrayList<ArrayList<String>> getPhashRanking(String filename, String csv) {

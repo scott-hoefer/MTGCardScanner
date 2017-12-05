@@ -1,7 +1,7 @@
 package com.mobilecomputing.sbarth.mtgcardscanner;
 
 /**
- * Created by barts_000 on 12/4/2017.
+ * Created by sam barth on 12/4/2017.
  */
 
 public class Tuple_RGB_bin implements Comparable {
