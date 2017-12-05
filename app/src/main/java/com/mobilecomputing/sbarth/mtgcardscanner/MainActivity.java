@@ -13,12 +13,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Button btnTakePic = (Button) findViewById(R.id.btnTakePic);
         btnTakePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, OpenCVCamera.class);
                 startActivity(intent);
+            }
+        });
+
+        Button libBtn = (Button) findViewById(R.id.btnViewCards);
+        libBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(MainActivity.this, Library.class);
+                startActivity(in);
             }
         });
     }

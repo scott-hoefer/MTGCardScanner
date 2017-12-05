@@ -169,6 +169,7 @@ public class OpenCVCamera extends AppCompatActivity implements CameraBridgeViewB
         //Utils.matToBitmap(cardMat, cardBmp);
         Rect r = new Rect(423, 160, 492, 672);
         Mat cm = new Mat(mRgba, r);
+
         Bitmap bmp = Bitmap.createBitmap(cm.cols(), cm.rows(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(cm, bmp);
         bmp = ImagePreprocessor.resizeImage(bmp, 164, 224);

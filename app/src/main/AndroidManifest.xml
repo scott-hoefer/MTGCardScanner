@@ -33,7 +33,8 @@
             android:name=".OpenCVCamera"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".SearchResults" />
-        <activity android:name=".CardImage"></activity>
+        <activity android:name=".CardImage" />
+        <activity android:name=".Library"></activity>
     </application>
 
 </manifest>
