@@ -1,8 +1,19 @@
 package com.mobilecomputing.sbarth.mtgcardscanner;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
 
 public class CardImage extends AppCompatActivity {
 
@@ -12,19 +23,36 @@ public class CardImage extends AppCompatActivity {
         setContentView(R.layout.activity_card_image);
 
         String name;
+        int rank = 0;
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
                 name = extras.getString("cardName");
+                rank = extras.getInt("pos");
             } else {
                 name = "Error";
             }
         } else {
             name = (String) savedInstanceState.getSerializable("CardName");
+            rank = (int) savedInstanceState.getSerializable("pos");
         }
 
         TextView t = (TextView) findViewById(R.id.nameTextView);
-        t.setText(name);
+        t.setText("Rank " + (rank+1));
+
+        setImage(name);
+    }
+
+    private void setImage(String filename) {
+        ImageView iv = (ImageView) findViewById(R.id.cardImageView);
+        try {
+            InputStream is = getAssets().open(filename);
+            Drawable d = Drawable.createFromStream(is, null);
+            iv.setImageDrawable(d);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

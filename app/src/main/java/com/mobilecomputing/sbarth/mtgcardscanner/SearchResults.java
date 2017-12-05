@@ -61,9 +61,6 @@ public class SearchResults extends AppCompatActivity implements AdapterView.OnIt
     }
 
     private void displayRankings() {
-//        InputStream i = getResources().openRawResource(getResources().getIdentifier("cn2-cardart-chist", "carddata", getPackageName()));
-//        Uri u = Uri.parse("android.resource://mobilecomputing.sbarth.mtgcardscanner/raw/cn2_cardart_chist.csv");
-//        Log.i("uri path", u.getPath());
         Scanner sc = new Scanner(getResources().openRawResource(R.raw.cn2_cardart_chist));
         ArrayList<HistogramTuple> arr =  ImagePreprocessor.getHistogramRanking(bmp, sc);
         adapter = new ArrayAdapter(SearchResults.this, R.layout.rankings_text_view, arr);
@@ -91,6 +88,7 @@ public class SearchResults extends AppCompatActivity implements AdapterView.OnIt
         HistogramTuple ht = (HistogramTuple) ranking.getItemAtPosition(position);
         String cardName = ht.getName();
         intent.putExtra("cardName", cardName);
+        intent.putExtra("pos", position);
         startActivity(intent);
     }
 }
