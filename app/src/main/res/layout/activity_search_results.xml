@@ -16,7 +16,7 @@
         android:layout_weight="10"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout-margin="16dp"
+        android:layout_margin="16dp"
         android:text="Something"
         android:textIsSelectable="true"
         android:clickable="true"/>
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:id = "@+id/btnReturnMain"
         android:layout_weight="1"
-        android:layout-margin="16dp"
+        android:layout_margin="16dp"
         android:background="@android:color/holo_red_dark"
         android:textColor="@android:color/white"
         android:textSize="14pt"

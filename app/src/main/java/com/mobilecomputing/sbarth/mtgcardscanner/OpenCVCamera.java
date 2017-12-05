@@ -56,7 +56,6 @@ public class OpenCVCamera extends AppCompatActivity implements CameraBridgeViewB
         }
     };
 
-
     static {
         if (OpenCVLoader.initDebug()) {
             Log.i(TAG, "OpenCV loaded successfully");

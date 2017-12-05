@@ -53,7 +53,7 @@ public class HistogramTuple {
     public static ArrayList<HistogramTuple> rank(HistogramTuple search, Collection<HistogramTuple> database) {
         ArrayList<HistogramTuple> result = new ArrayList();
         for (HistogramTuple item : database) {
-            item.delta = ImagePreprocessor.compareImages(item.hist, search.hist);
+            item.delta = ImagePreprocessor.compareImages(item.hist, search.hist, 10);
             result.add(item);
         }
         result.sort(new Comparator() {
