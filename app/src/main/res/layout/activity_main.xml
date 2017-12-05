@@ -7,17 +7,29 @@
     tools:context="com.mobilecomputing.sbarth.mtgcardscanner.MainActivity"
     android:orientation="vertical"
     android:weightSum="10"
-    android:paddingBottom="16dp"
-    android:paddingRight="16dp"
-    android:paddingLeft="16dp"
-    android:paddingTop="16dp"
+    android:padding="16dp"
+    android:gravity="center"
     >
-
+    <!--
     <ImageView
         android:id="@+id/imageView"
         android:layout_weight="9"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
+        />
+    -->
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id = "@+id/btnViewCards"
+        android:layout_weight="1"
+        android:layout_margin="16dp"
+        android:background="@android:color/holo_red_dark"
+        android:textColor="@android:color/white"
+        android:textSize="14pt"
+        android:text="View My Cards"
+
         />
 
     <Button
@@ -25,8 +37,10 @@
         android:layout_height="wrap_content"
         android:id = "@+id/btnTakePic"
         android:layout_weight="1"
+        android:layout_margin="16dp"
         android:background="@android:color/holo_red_dark"
         android:textColor="@android:color/white"
+        android:textSize="14pt"
         android:text="Scan Card"
 
         />
