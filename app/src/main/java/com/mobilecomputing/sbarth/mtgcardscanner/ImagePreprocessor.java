@@ -168,7 +168,6 @@ public class ImagePreprocessor {
         int picw = image.getWidth();
         int pich = image.getHeight();
         int[][][] ch = new int[4][4][4];
-        //Bitmap image = BitmapFactory.decodeFile(f.getPath());
         for(int x = 0; x < picw ; x++)
             for(int y = 0; y < pich ; y++) {
                 int pixel = image.getPixel(x, y);
