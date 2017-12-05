@@ -16,8 +16,8 @@
         android:layout_weight="10"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_margin="16dp"
         android:text="Something"
+        android:layout_margin="16dp"
         android:textIsSelectable="true"
         android:clickable="true"/>
 
