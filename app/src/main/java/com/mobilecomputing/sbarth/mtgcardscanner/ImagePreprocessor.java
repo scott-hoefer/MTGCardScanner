@@ -167,7 +167,6 @@ public class ImagePreprocessor {
 //                    Log.i("processing image", "t[" + i + "][" + j + "][" + p + "] = " + ch[i][j][p]);
         return ch;
     }
-    */
 
     /**
      * getHistogramRanking:
@@ -231,7 +230,6 @@ public class ImagePreprocessor {
             }
         }
     }
-    */
 
     /**
      * resizeImage:
