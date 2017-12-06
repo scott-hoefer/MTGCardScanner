@@ -1,5 +1,11 @@
 package com.mobilecomputing.sbarth.mtgcardscanner;
 
+/**
+ * CardImage.java
+ *
+ * Sam Barth, Scott Hoefer, Cole Petersen
+ */
+
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -31,6 +37,10 @@ import java.io.OutputStreamWriter;
 
 public class CardImage extends AppCompatActivity {
 
+    /**
+     * onCreate:
+     * Initializes the Card Image activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +77,10 @@ public class CardImage extends AppCompatActivity {
         });
     }
 
+    /**
+     * addCard:
+     * Adds a card to the library.
+     */
     private void addCard(String name) {
         String filename = "userLib.txt";
         FileOutputStream os;
@@ -85,7 +99,10 @@ public class CardImage extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * setImage:
+     * Displays image of a card in the library.
+     */
     private void setImage(String filename) {
         ImageView iv = (ImageView) findViewById(R.id.cardImageView);
         try {
@@ -98,6 +115,10 @@ public class CardImage extends AppCompatActivity {
         }
     }
 
+    /**
+     * onConfigurationChanged:
+     * Sets orientation to Portrait.
+     */
     @Override
     public void onConfigurationChanged(Configuration newConfig){
         super.onConfigurationChanged(newConfig);

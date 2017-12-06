@@ -1,5 +1,11 @@
 package com.mobilecomputing.sbarth.mtgcardscanner;
 
+/**
+ * SearchResults.java
+ *
+ * Sam Barth, Scott Hoefer, Cole Petersen
+ */
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,6 +29,10 @@ public class SearchResults extends AppCompatActivity implements AdapterView.OnIt
     ArrayAdapter adapter;
     Bitmap bmp = null;
 
+    /**
+     * onCreate:
+     * Initializes the Search Results activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +69,10 @@ public class SearchResults extends AppCompatActivity implements AdapterView.OnIt
         displayRankings();
     }
 
+    /**
+     * displayRankings:
+     * Displays an ArrayList of cards, sorted from most to least similar to captured image.
+     */
     private void displayRankings() {
         Scanner sc = new Scanner(getResources().openRawResource(R.raw.cn2_cardart_chist));
         ArrayList<HistogramTuple> arr =  ImagePreprocessor.getHistogramRanking(bmp, sc);
@@ -82,6 +96,10 @@ public class SearchResults extends AppCompatActivity implements AdapterView.OnIt
         super.onDestroy();
     }
 
+    /**
+     * onItemClick:
+     * Opens the selected card from the ArrayList
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(SearchResults.this, CardImage.class);

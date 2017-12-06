@@ -1,5 +1,11 @@
 package com.mobilecomputing.sbarth.mtgcardscanner;
 
+/**
+ * Library.java
+ *
+ * Sam Barth, Scott Hoefer, Cole Petersen
+ */
+
 import android.graphics.drawable.Drawable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +21,11 @@ import java.io.InputStream;
 
 public class Library extends AppCompatActivity {
     @Override
+
+    /**
+     * onCreate:
+     * Initializes the Library activity.
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_library);
@@ -23,6 +34,10 @@ public class Library extends AppCompatActivity {
         getImages(usersCards, layout);
     }
 
+    /**
+     * getCards:
+     * Returns a String of scanned cards.
+     */
     private String getCards(String filename) {
         int ch;
         StringBuffer fileContent = new StringBuffer("");
@@ -44,6 +59,10 @@ public class Library extends AppCompatActivity {
         return data;
     }
 
+    /**
+     * getImages:
+     * Displays images of scanned cards.
+     */
     private void getImages(String cards, LinearLayout layout) {
         String usersCardsList[] = cards.split("\\r\\n|\\n|\\r");
         for (String cardName : usersCardsList) {

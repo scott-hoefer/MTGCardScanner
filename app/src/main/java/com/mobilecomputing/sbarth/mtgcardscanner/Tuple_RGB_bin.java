@@ -1,6 +1,10 @@
 package com.mobilecomputing.sbarth.mtgcardscanner;
 
 /**
+ * Tuple_RGB_bin.java
+ *
+ * Sam Barth, Scott Hoefer, Cole Petersen
+ *
  * Created by sam barth on 12/4/2017.
  */
 
@@ -21,6 +25,11 @@ public class Tuple_RGB_bin implements Comparable {
         return b_value;
     }
 
+    /**
+     * compareTo:
+     * Returns whether the sum of an objects R, G, and B values is less than (-1), greater than
+     * (+1), or equal to (0) that of another.
+     */
     @Override
     public int compareTo(Object o) {
         int sumThis = r_value + g_value + b_value;

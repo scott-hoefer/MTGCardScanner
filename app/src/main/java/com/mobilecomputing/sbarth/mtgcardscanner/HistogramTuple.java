@@ -1,14 +1,18 @@
 package com.mobilecomputing.sbarth.mtgcardscanner;
 
+/**
+ * HistogramTuple.java
+ *
+ * Sam Barth, Scott Hoefer, Cole Petersen
+ *
+ * Created by sam barth on 11/30/2017.
+ */
+
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-
-/**
- * Created by sam barth on 11/30/2017.
- */
 
 public class HistogramTuple {
 
@@ -29,14 +33,22 @@ public class HistogramTuple {
         return hist;
     }
 
+    /*
     public int getDifference(HistogramTuple other) {
         return ImagePreprocessor.compareImages(hist, other.getHistogram());
     }
+    */
 
+    /*
     public int getDifference(int[][][] otherhist) {
         return ImagePreprocessor.compareImages(hist, otherhist);
     }
+    */
 
+    /**
+     * toString:
+     * Converts delta or histogram to a String.
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(name + ":\n");

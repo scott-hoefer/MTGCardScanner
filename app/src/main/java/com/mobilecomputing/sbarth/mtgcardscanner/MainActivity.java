@@ -1,5 +1,11 @@
 package com.mobilecomputing.sbarth.mtgcardscanner;
 
+/**
+ * MainActivity.java
+ *
+ * Sam Barth, Scott Hoefer, Cole Petersen
+ */
+
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,11 +15,16 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
+    /**
+     * onCreate:
+     * Opens the app.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // "Scan Card" button
         Button btnTakePic = (Button) findViewById(R.id.btnTakePic);
         btnTakePic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -23,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // "View My Cards" button
         Button libBtn = (Button) findViewById(R.id.btnViewCards);
         libBtn.setOnClickListener(new View.OnClickListener() {
             @Override

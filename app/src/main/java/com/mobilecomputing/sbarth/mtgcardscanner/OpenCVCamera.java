@@ -1,5 +1,11 @@
 package com.mobilecomputing.sbarth.mtgcardscanner;
 
+/**
+ * OpenCVCamera.java:
+ *
+ * Sam Barth, Scott Hoefer, Cole Petersen
+ */
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;

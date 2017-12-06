@@ -1,5 +1,13 @@
 package com.mobilecomputing.sbarth.mtgcardscanner;
 
+/**
+ * EdgeDetection.java
+ *
+ * Sam Barth, Scott Hoefer, Cole Petersen
+ *
+ * Created by shoefer on 11/15/2017.
+ */
+
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -16,10 +24,6 @@ import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Created by shoefer on 11/15/2017.
- */
 
 public class EdgeDetection extends Activity{
 
