@@ -14,6 +14,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Library extends AppCompatActivity {
     @Override
@@ -48,6 +50,7 @@ public class Library extends AppCompatActivity {
 
     private void getImages(String cards, LinearLayout layout) {
         final String usersCardsList[] = cards.split("\\r\\n|\\n|\\r");
+        List<String> eliminateDuplicatePics = new ArrayList<>();
         for (final String cardName : usersCardsList) {
             ImageView i = new ImageView(this);
             i.setAdjustViewBounds(true);
@@ -59,11 +62,14 @@ public class Library extends AppCompatActivity {
                 }
             });
             try {
-                InputStream is = getAssets().open(cardName);
-                Drawable d = Drawable.createFromStream(is, null);
-                i.setImageDrawable(d);
-                layout.addView(i);
-                is.close();
+                if (!eliminateDuplicatePics.contains(cardName)) {
+                    InputStream is = getAssets().open(cardName);
+                    Drawable d = Drawable.createFromStream(is, null);
+                    i.setImageDrawable(d);
+                    layout.addView(i);
+                    is.close();
+                    eliminateDuplicatePics.add(cardName);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

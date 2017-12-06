@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,8 +20,9 @@ public class CardInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_info);
 
+        // gather the necessary data
         String query = "";
-        String cardList[];
+        String cardList[] = null;
         String name;
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
@@ -37,6 +39,7 @@ public class CardInfo extends AppCompatActivity {
             cardList = savedInstanceState.getStringArray("cardList");
         }
 
+        // search button functionality
         Button searchBtn = (Button) findViewById(R.id.btnSearchCard);
         final String finalQuery = query;
         searchBtn.setOnClickListener(new View.OnClickListener() {
@@ -48,9 +51,26 @@ public class CardInfo extends AppCompatActivity {
             }
         });
 
+        // get the number of copies the user has
+        numOfCopies(name, cardList);
+
         setImage(name);
     }
 
+    private void numOfCopies(String name, String cardList[]) {
+        int count = 0;
+        if (cardList != null) {
+            for (String s : cardList) {
+                if (s.equals(name)) {
+                    count += 1;
+                }
+            }
+        }
+        TextView tv = (TextView) findViewById(R.id.cardInfoTextView);
+        tv.setText("Copies: " + count);
+    }
+
+    // set the image view
     private void setImage(String filename) {
         ImageView iv = (ImageView) findViewById(R.id.cardInfoImageView);
         try {
