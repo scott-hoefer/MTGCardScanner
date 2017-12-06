@@ -74,6 +74,24 @@ public class ImagePreprocessor {
         return delta;
     }
 
+    public static int compareImages(int[][][][] searchHist, int[][][][] referenceHist, int c) {
+        CComparisonObject co = new CComparisonObject(c, searchHist);
+        return compareImages(searchHist, referenceHist, co);
+    }
+
+    public static int compareImages(int[][][][] searchHist, int[][][][] referenceHist, CComparisonObject c) {
+        int delta = 0;
+        ArrayList<Tuple_RGB_bin> bins = c.getBins();
+        for (Tuple_RGB_bin bin : bins) {
+            int r = bin.getR();
+            int b = bin.getB();
+            int g = bin.getG();
+            int ed = bin.getEd();
+            delta += java.lang.Math.abs(referenceHist[r][g][b][ed] - searchHist[r][g][b][ed]);
+        }
+        return delta;
+    }
+
 //    public static int compareImages(int[][][] searchHist, int[][][] referenceHist, int c) {
 //        int delta = 0;
 //        for ( bin : searchHist)
@@ -91,6 +109,28 @@ public class ImagePreprocessor {
                     for (int k = 0; k < hist[0][0].length; k++) {
                         hist[i][j][k] = Integer.parseInt(split[tracker]);
                         tracker++;
+                    }
+                }
+            }
+            result.add(new HistogramTuple(split[0], hist));
+        }
+        return result;
+    }
+
+    public static ArrayList<HistogramTuple> readJ1HistogramCSV(Scanner sc) {
+        ArrayList<HistogramTuple> result = new ArrayList();
+        while (sc.hasNext()) {
+            String line = sc.nextLine();
+            String[] split = line.split(",", 321);
+            int[][][][] hist = new int[4][4][4][5];
+            int tracker = 1;
+            for (int i = 0; i < hist.length; i++) {
+                for (int j = 0; j < hist[0].length; j++) {
+                    for (int k = 0; k < hist[0][0].length; k++) {
+                        for (int l = 0; l < hist[0][0][0].length ; l++) {
+                            hist[i][j][k][l] = Integer.parseInt(split[tracker]);
+                            tracker++;
+                        }
                     }
                 }
             }
@@ -128,6 +168,19 @@ public class ImagePreprocessor {
         ArrayList<HistogramTuple> sorted = null;
         try {
             sorted = HistogramTuple.rank(processImage(bmp), unsorted);
+        } catch (Exception ex) {
+            System.err.println("There was a problem opening the image file");
+            System.err.println(ex.toString());
+        }
+        return sorted;
+    }
+
+    public static ArrayList<HistogramTuple> getJ1HistogramRanking(Bitmap bmp, Scanner sc) {
+        ArrayList<HistogramTuple> unsorted = new ArrayList();
+        unsorted = readJ1HistogramCSV(sc);
+        ArrayList<HistogramTuple> sorted = null;
+        try {
+            sorted = HistogramTuple.rank(processImageToJH1(bmp), unsorted);
         } catch (Exception ex) {
             System.err.println("There was a problem opening the image file");
             System.err.println(ex.toString());
@@ -185,20 +238,20 @@ public class ImagePreprocessor {
                 int alpha = Color.alpha(pixel);
                 ch[red / 64][green / 64][blue / 64]++;
             }
-        for(int i = 0; i < ch.length; i++)
-            for(int j = 0; j < ch[i].length; j++)
-                for(int p = 0; p < ch[i][j].length; p++)
-                    Log.i("histogram", "t[" + i + "][" + j + "][" + p + "] = " + ch[i][j][p]);
+//        for(int i = 0; i < ch.length; i++)
+//            for(int j = 0; j < ch[i].length; j++)
+//                for(int p = 0; p < ch[i][j].length; p++)
+//                    Log.i("histogram", "t[" + i + "][" + j + "][" + p + "] = " + ch[i][j][p]);
         return ch;
     }
 
     public static int[][][][] processImageToJH1(Bitmap image) throws Exception {
         int[][][][] ch = new int[4][4][4][5];
+        Mat src = new Mat();
         Mat edgesMat = new Mat();
-        Bitmap edges = null;
-        Utils.bitmapToMat(image, edgesMat);
-        Imgproc.Canny(edgesMat, edgesMat, 40, 120);  //get the edges of the image using Canny Edge Detection Algorithm
-        Utils.matToBitmap(edgesMat, edges);
+        Mat edgesBlackAndWhite = new Mat();
+        Utils.bitmapToMat(image, src);
+        Imgproc.Canny(src, edgesMat, 40, 120);  //get the edges of the image using Canny Edge Detection Algorithm
         for(int x = 0; x < image.getWidth(); x++)
             for(int y = 0; y < image.getHeight(); y++) {
                 int p = image.getPixel(x, y);
@@ -206,7 +259,7 @@ public class ImagePreprocessor {
                 int green = Color.green(p);
                 int blue = Color.blue(p);
 
-                int pixel = edges.getPixel(x, y);
+                double[] pixel = edgesMat.get(x, y);
                 int numEdges = 0;
                 int totalPixels = 0;
                 int edgeDensity = 0;
@@ -230,8 +283,8 @@ public class ImagePreprocessor {
         return ch;
     }
 
-    private static boolean isBlack(int pix) {
-        return Color.red(pix) == 0 && Color.green(pix) == 0 && Color.blue(0) == 0;
+    private static boolean isBlack(double[] pix) {
+        return pix[0] == 0 && pix[1] == 0 && pix[2] ==0;
     }
 
 //    public static ArrayList<ArrayList<String>> getPhashRanking(String filename, String csv) {

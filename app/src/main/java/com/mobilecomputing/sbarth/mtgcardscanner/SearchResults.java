@@ -56,12 +56,20 @@ public class SearchResults extends AppCompatActivity implements AdapterView.OnIt
             e.printStackTrace();
         }
 
-        displayRankings();
+        displayColorHistogramRankings();
     }
 
-    private void displayRankings() {
-        Scanner sc = new Scanner(getResources().openRawResource(R.raw.cn2_cardart_chist));
+    private void displayColorHistogramRankings() {
+        Scanner sc = new Scanner(getResources().openRawResource(R.raw.ixl_cardart_chist));
         ArrayList<HistogramTuple> arr =  ImagePreprocessor.getHistogramRanking(bmp, sc);
+        adapter = new ArrayAdapter(SearchResults.this, R.layout.rankings_text_view, arr);
+        ranking.setAdapter(adapter);
+        sc.close();
+    }
+
+    private void displayJ1HistogramRankings() {
+        Scanner sc = new Scanner(getResources().openRawResource(R.raw.ixl_cardart_j1hist));
+        ArrayList<HistogramTuple> arr =  ImagePreprocessor.getJ1HistogramRanking(bmp, sc);
         adapter = new ArrayAdapter(SearchResults.this, R.layout.rankings_text_view, arr);
         ranking.setAdapter(adapter);
         sc.close();

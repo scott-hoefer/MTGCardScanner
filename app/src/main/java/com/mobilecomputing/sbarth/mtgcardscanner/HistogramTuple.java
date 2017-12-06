@@ -13,12 +13,18 @@ import java.util.Comparator;
 public class HistogramTuple {
 
     private String name;
-    private int[][][] hist;
+    private int[][][] hist = null;
+    private int[][][][] j1hist = null;
     private int delta;
 
     HistogramTuple(String name, int[][][] hist) {
         this.name = name;
         this.hist = hist;
+    }
+
+    HistogramTuple(String name, int[][][][] j1hist) {
+        this.name = name;
+        this.j1hist = j1hist;
     }
 
     public String getName() {
@@ -29,12 +35,8 @@ public class HistogramTuple {
         return hist;
     }
 
-    public int getDifference(HistogramTuple other) {
-        return ImagePreprocessor.compareImages(hist, other.getHistogram());
-    }
-
-    public int getDifference(int[][][] otherhist) {
-        return ImagePreprocessor.compareImages(hist, otherhist);
+    public int[][][][] getJ1Histogram(){
+        return j1hist;
     }
 
     @Override
@@ -54,14 +56,27 @@ public class HistogramTuple {
 
     public void setDelta(int d) {this.delta = d;}
 
-    public int getDelta() {return delta;}
-
 
     public static ArrayList<HistogramTuple> rank(HistogramTuple search, Collection<HistogramTuple> database) {
         ArrayList<HistogramTuple> result = new ArrayList();
         for (HistogramTuple reference : database) {
             reference.setDelta(ImagePreprocessor.compareImages(search.hist, reference.hist, 7));
-//            Log.i("referencedelta", Integer.toString(reference.getDelta()));
+            result.add(reference);
+        }
+        result.sort(new Comparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                return ((Integer) ((HistogramTuple) o1).delta).compareTo((Integer) ((HistogramTuple) o2).delta);
+            }
+
+        });
+        return result;
+    }
+
+    public static ArrayList<HistogramTuple> rankJ1(HistogramTuple search, Collection<HistogramTuple> database) {
+        ArrayList<HistogramTuple> result = new ArrayList();
+        for (HistogramTuple reference : database) {
+            reference.setDelta(ImagePreprocessor.compareImages(search.hist, reference.hist, 7));
             result.add(reference);
         }
         result.sort(new Comparator() {
@@ -77,4 +92,8 @@ public class HistogramTuple {
     public static ArrayList<HistogramTuple> rank(int[][][] search, Collection<HistogramTuple> database) {
         return HistogramTuple.rank(new HistogramTuple("", search), database);
     }
+
+    public static ArrayList<HistogramTuple> rank(int[][][][] search, Collection<HistogramTuple> database) {
+        return HistogramTuple.rankJ1(new HistogramTuple("", search), database);
+    };
 }
