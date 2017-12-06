@@ -56,7 +56,11 @@ public class HistogramTuple {
 
     public int getDelta() {return delta;}
 
-
+    /**
+     * rank:
+     * Takes a captured histogram and returns a sorted ArrayList of database histograms, from most
+     * to least similar.
+     */
     public static ArrayList<HistogramTuple> rank(HistogramTuple search, Collection<HistogramTuple> database) {
         ArrayList<HistogramTuple> result = new ArrayList();
         for (HistogramTuple reference : database) {

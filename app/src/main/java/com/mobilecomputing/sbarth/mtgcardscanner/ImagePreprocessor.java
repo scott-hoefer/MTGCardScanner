@@ -1,13 +1,11 @@
 package com.mobilecomputing.sbarth.mtgcardscanner;
 
 /**
+ * ImageProcessor.java
+ *
+ * Sam Barth, Scott Hoefer, Cole Petersen
+ *
  * Created by sam barth on 11/30/2017.
- */
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
  */
 
 import android.graphics.Bitmap;
@@ -36,15 +34,17 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author barts_000
- */
 public class ImagePreprocessor {
 
     static int CARD_WIDTH = 265;
     static int CARD_HEIGHT = 370;
 
+    /**
+     * compareImages:
+     * Compares captured image histogram with database image histogram and returns total difference.
+     */
+
+    // for all histogram bins
     public static int compareImages(int[][][] compImg, int[][][] baseImg) {
         int delta = 0;
         for (int i = 0; i < compImg.length; i++) {
@@ -57,11 +57,13 @@ public class ImagePreprocessor {
         return delta;
     }
 
+    // for c most populated bins for captured image
     public static int compareImages(int[][][] searchHist, int[][][] referenceHist, int c) {
         CComparisonObject co = new CComparisonObject(c, searchHist);
         return compareImages(searchHist, referenceHist, co);
     }
 
+    // for c most populated bins for captured image
     public static int compareImages(int[][][] searchHist, int[][][] referenceHist, CComparisonObject c) {
         int delta = 0;
         ArrayList<Tuple_RGB_bin> bins = c.getBins();
@@ -79,6 +81,10 @@ public class ImagePreprocessor {
 //        for ( bin : searchHist)
 //    }
 
+    /**
+     * readHistogramCSV:
+     * Returns ArrayList of each image histogram in database.
+     */
     public static ArrayList<HistogramTuple> readHistogramCSV(Scanner sc) {
         ArrayList<HistogramTuple> result = new ArrayList();
         while (sc.hasNext()) {
@@ -99,6 +105,7 @@ public class ImagePreprocessor {
         return result;
     }
 
+    /*
     public static int[][][] processImage(File f) throws Exception {
         int[][][] ch = new int[4][4][4];
         Bitmap image = BitmapFactory.decodeFile(f.getPath());
@@ -121,9 +128,15 @@ public class ImagePreprocessor {
 //                    Log.i("processing image", "t[" + i + "][" + j + "][" + p + "] = " + ch[i][j][p]);
         return ch;
     }
+    */
 
+    /**
+     * getHistogramRanking:
+     * Takes a captured image and returns a sorted ArrayList of database images, from most to least
+     * similar.
+     */
     public static ArrayList<HistogramTuple> getHistogramRanking(Bitmap bmp, Scanner sc) {
-        ArrayList<HistogramTuple> unsorted = new ArrayList();
+        ArrayList<HistogramTuple> unsorted;
         unsorted = readHistogramCSV(sc);
         ArrayList<HistogramTuple> sorted = null;
         try {
@@ -135,6 +148,7 @@ public class ImagePreprocessor {
         return sorted;
     }
 
+    /*
     public static void resizeImage(File f) {
         Bitmap currentImage;
         if (f != null) {
@@ -166,16 +180,25 @@ public class ImagePreprocessor {
             }
         }
     }
+    */
 
+    /**
+     * resizeImage:
+     * Takes a Bitmap and returns the same image scaled differently.
+     */
     public static Bitmap resizeImage(Bitmap currentImage, int w, int h) {
         Bitmap resized = Bitmap.createScaledBitmap(currentImage, w, h, true);
         return resized;
     }
 
+    /**
+     * processImage:
+     * Takes a Bitmap and returns its color histogram.
+     */
     public static int[][][] processImage(Bitmap image) throws Exception {
         int picw = image.getWidth();
         int pich = image.getHeight();
-        int[][][] ch = new int[4][4][4];
+        int[][][] ch = new int[4][4][4]; // R, G, and B with 4 bins each
         for(int x = 0; x < picw ; x++)
             for(int y = 0; y < pich ; y++) {
                 int pixel = image.getPixel(x, y);
@@ -183,7 +206,7 @@ public class ImagePreprocessor {
                 int blue = Color.blue(pixel);
                 int green = Color.green(pixel);
                 int alpha = Color.alpha(pixel);
-                ch[red / 64][green / 64][blue / 64]++;
+                ch[red / 64][green / 64][blue / 64]++; // truncate from 256 to 4 bins
             }
         for(int i = 0; i < ch.length; i++)
             for(int j = 0; j < ch[i].length; j++)
@@ -192,12 +215,19 @@ public class ImagePreprocessor {
         return ch;
     }
 
+    /**
+     * processImageToJH1:
+     * Takes a Bitmap and returns its joint histogram, using color and edge density (JH1).
+     * Edge density is ratio of edge pixels to total pixels in a given window.
+     */
     public static int[][][][] processImageToJH1(Bitmap image) throws Exception {
-        int[][][][] ch = new int[4][4][4][5];
+        int[][][][] ch = new int[4][4][4][5]; // R, G, and B with 4 bins each, 5 edge density bins
         Mat edgesMat = new Mat();
         Bitmap edges = null;
         Utils.bitmapToMat(image, edgesMat);
-        Imgproc.Canny(edgesMat, edgesMat, 40, 120);  //get the edges of the image using Canny Edge Detection Algorithm
+        //get the edges of the image using Canny Edge Detection Algorithm
+        Imgproc.Canny(edgesMat, edgesMat, 40, 120);
+
         Utils.matToBitmap(edgesMat, edges);
         for(int x = 0; x < image.getWidth(); x++)
             for(int y = 0; y < image.getHeight(); y++) {
@@ -210,6 +240,8 @@ public class ImagePreprocessor {
                 int numEdges = 0;
                 int totalPixels = 0;
                 int edgeDensity = 0;
+
+                // find the number of edge pixels and total pixels in each window
                 for (int i = x - 2 ; i < x + 3 ; i++) {
                     for (int j = y - 2 ; j < y + 3 ; j++) {
                         if (i < 0 || y < 0) { continue; }
@@ -222,14 +254,21 @@ public class ImagePreprocessor {
                         }
                     }
                 }
+
+                // find edge density, then truncate into 5 bins
                 if (totalPixels != 0) {
                     edgeDensity = (int) java.lang.Math.ceil((totalPixels / numEdges ) * 5);
                 }
+                // truncate colors from 256 to 4 bins
                 ch[red / 64][green / 64][blue / 64][edgeDensity]++;
             }
         return ch;
     }
 
+    /**
+     * isBlack:
+     * Returns whether or not a pixel is black (R = 0, G = 0, B = 0)
+     */
     private static boolean isBlack(int pix) {
         return Color.red(pix) == 0 && Color.green(pix) == 0 && Color.blue(0) == 0;
     }
@@ -265,6 +304,7 @@ public class ImagePreprocessor {
 //        return sorted;
 //    }
 
+    /*
     public static void writeHistogramToCSV(String cn, int[][][] hist) throws FileNotFoundException {
         PrintWriter pw = new PrintWriter(new File("histograms/" + cn + ".csv"));
         StringBuilder sb = new StringBuilder();
@@ -285,6 +325,7 @@ public class ImagePreprocessor {
                 }
         pw.close();
     }
+    */
 
 }
 
