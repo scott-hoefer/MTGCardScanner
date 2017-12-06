@@ -1,10 +1,12 @@
 package com.mobilecomputing.sbarth.mtgcardscanner;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -45,10 +47,17 @@ public class Library extends AppCompatActivity {
     }
 
     private void getImages(String cards, LinearLayout layout) {
-        String usersCardsList[] = cards.split("\\r\\n|\\n|\\r");
-        for (String cardName : usersCardsList) {
+        final String usersCardsList[] = cards.split("\\r\\n|\\n|\\r");
+        for (final String cardName : usersCardsList) {
             ImageView i = new ImageView(this);
             i.setAdjustViewBounds(true);
+            final String query = cardName.substring(0, cardName.length()-4) + " mtg";
+            i.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    cardClicked(query, usersCardsList, cardName);
+                }
+            });
             try {
                 InputStream is = getAssets().open(cardName);
                 Drawable d = Drawable.createFromStream(is, null);
@@ -59,5 +68,14 @@ public class Library extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void cardClicked(String query, String cardList[], String name) {
+        Intent intent = new Intent(Library.this, CardInfo.class);
+        intent.putExtra("query", query);
+        intent.putExtra("cardList", cardList);
+        intent.putExtra("cardName", name);
+        Log.i("cardName", name);
+        startActivity(intent);
     }
 }
