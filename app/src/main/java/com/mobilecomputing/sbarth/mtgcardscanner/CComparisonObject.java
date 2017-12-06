@@ -52,7 +52,7 @@ public class CComparisonObject {
             for (int j = 0; j < j1hist[0].length ; j++) {
                 for (int k = 0; k < j1hist[0][0].length ; k++) {
                     for (int l = 0 ; l < j1hist[0][0][0].length ; l++) {
-                        sorted.add(new Tuple_RGB_bin(i, j, k));
+                        sorted.add(new Tuple_RGB_bin(i, j, k, l));
                     }
                 }
             }

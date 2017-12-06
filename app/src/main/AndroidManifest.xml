@@ -34,7 +34,8 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".SearchResults" />
         <activity android:name=".CardImage" />
-        <activity android:name=".Library"></activity>
+        <activity android:name=".Library" />
+        <activity android:name=".CardInfo"></activity>
     </application>
 
 </manifest>
