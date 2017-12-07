@@ -273,9 +273,10 @@ public class ImagePreprocessor {
         int[][][][] ch = new int[4][4][4][5];
         Mat src = new Mat();
         Mat edgesMat = new Mat();
-        Mat edgesBlackAndWhite = new Mat();
         Utils.bitmapToMat(image, src);
         Imgproc.Canny(src, edgesMat, 40, 120);  //get the edges of the image using Canny Edge Detection Algorithm
+        Bitmap edges = image;
+        Utils.matToBitmap(edgesMat, edges);
         for(int x = 0; x < image.getWidth(); x++)
             for(int y = 0; y < image.getHeight(); y++) {
                 int p = image.getPixel(x, y);
@@ -283,7 +284,6 @@ public class ImagePreprocessor {
                 int green = Color.green(p);
                 int blue = Color.blue(p);
 
-                double[] pixel = edgesMat.get(x, y);
                 int numEdges = 0;
                 int totalPixels = 0;
                 int edgeDensity = 0;
@@ -291,9 +291,10 @@ public class ImagePreprocessor {
                 // find the number of edge pixels and total pixels in each window
                 for (int i = x - 2 ; i < x + 3 ; i++) {
                     for (int j = y - 2 ; j < y + 3 ; j++) {
-                        if (i < 0 || y < 0) { continue; }
-                        else if (i >= image.getWidth() || y >= image.getHeight()) { continue; }
+                        if (i < 0 || j < 0) { continue; }
+                        else if (i >= edges.getWidth() || j >= edges.getHeight()) { continue; }
                         else {
+                            int pixel = edges.getPixel(i, j);
                             if (!isBlack(pixel)) {
                                 numEdges++;
                             }
@@ -304,7 +305,7 @@ public class ImagePreprocessor {
 
                 // find edge density, then truncate into 5 bins
                 if (totalPixels != 0) {
-                    edgeDensity = (int) java.lang.Math.ceil((totalPixels / numEdges ) * 5);
+                    edgeDensity = (int) java.lang.Math.ceil((numEdges / totalPixels ) * 4);
                 }
                 // truncate colors from 256 to 4 bins
                 ch[red / 64][green / 64][blue / 64][edgeDensity]++;
@@ -316,8 +317,8 @@ public class ImagePreprocessor {
      * isBlack:
      * Returns whether or not a pixel is black (R = 0, G = 0, B = 0)
      */
-    private static boolean isBlack(double[] pix) {
-        return pix[0] == 0 && pix[1] == 0 && pix[2] ==0;
+    private static boolean isBlack(int pix) {
+        return Color.red(pix) == 0 && Color.green(pix) == 0 && Color.blue(pix) == 0;
     }
 
 //    public static ArrayList<ArrayList<String>> getPhashRanking(String filename, String csv) {

@@ -35,7 +35,8 @@
         <activity android:name=".SearchResults" />
         <activity android:name=".CardImage" />
         <activity android:name=".Library" />
-        <activity android:name=".CardInfo"></activity>
+        <activity android:name=".CardInfo" />
+        <activity android:name=".SearchResultsJH"></activity>
     </application>
 
 </manifest>

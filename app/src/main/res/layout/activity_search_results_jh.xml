@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mobilecomputing.sbarth.mtgcardscanner.SearchResults"
+    tools:context="com.mobilecomputing.sbarth.mtgcardscanner.SearchResultsJH"
     android:orientation="vertical"
     android:weightSum="10"
 
@@ -22,15 +22,14 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id = "@+id/btnByJointHistogram"
+        android:id = "@+id/btnByColorHistogram"
         android:layout_weight="1"
         android:layout_margin="16dp"
         android:background="@android:color/holo_red_dark"
         android:textColor="@android:color/white"
         android:textSize="14pt"
-        android:text="By Joint Histogram"
+        android:text="By Color Histogram"
         />
-
 
     <Button
         android:layout_width="match_parent"

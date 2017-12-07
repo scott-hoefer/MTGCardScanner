@@ -90,7 +90,7 @@ public class HistogramTuple {
     public static ArrayList<HistogramTuple> rankJ1(HistogramTuple search, Collection<HistogramTuple> database) {
         ArrayList<HistogramTuple> result = new ArrayList();
         for (HistogramTuple reference : database) {
-            reference.setDelta(ImagePreprocessor.compareImages(search.hist, reference.hist, 7));
+            reference.setDelta(ImagePreprocessor.compareImages(search.getJ1Histogram(), reference.getJ1Histogram(), 7));
             result.add(reference);
         }
         result.sort(new Comparator() {

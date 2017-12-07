@@ -1,11 +1,5 @@
 package com.mobilecomputing.sbarth.mtgcardscanner;
 
-/**
- * SearchResults.java
- *
- * Sam Barth, Scott Hoefer, Cole Petersen
- */
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,15 +11,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class SearchResults extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class SearchResultsJH extends AppCompatActivity implements AdapterView.OnItemClickListener{
 
     ListView ranking;
     Button btnReturnMain;
-    Button btnByJointHistogram;
+    Button btnByColorHistogram;
     String filename;
     ArrayAdapter adapter;
     Bitmap bmp = null;
@@ -38,12 +33,12 @@ public class SearchResults extends AppCompatActivity implements AdapterView.OnIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_search_results);
+        setContentView(R.layout.activity_search_results_jh);
         btnReturnMain = (Button) findViewById(R.id.btnReturnMain);
         btnReturnMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SearchResults.this, MainActivity.class);
+                Intent intent = new Intent(SearchResultsJH.this, MainActivity.class);
                 startActivity(intent);
             }
         });
@@ -67,29 +62,28 @@ public class SearchResults extends AppCompatActivity implements AdapterView.OnIt
             e.printStackTrace();
         }
 
-        btnByJointHistogram = (Button) findViewById(R.id.btnByJointHistogram);
-        btnByJointHistogram.setOnClickListener(new View.OnClickListener() {
+        btnByColorHistogram = (Button) findViewById(R.id.btnByColorHistogram);
+        btnByColorHistogram.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SearchResults.this, SearchResultsJH.class);
-                intent.putExtra("image", filename);
+                Intent intent = new Intent(SearchResultsJH.this, SearchResults.class);
                 startActivity(intent);
             }
         });
 
-        displayColorHistogramRankings();
+        displayJ1HistogramRankings();
+
     }
 
     /**
      * displayRankings:
      * Displays an ArrayList of cards, sorted from most to least similar to captured image.
      */
-    private void displayColorHistogramRankings() {
-        Scanner sc = new Scanner(getResources().openRawResource(R.raw.ixl_cardart_chist));
-        ArrayList<HistogramTuple> arr =  ImagePreprocessor.getHistogramRanking(bmp, sc);
-        adapter = new ArrayAdapter(SearchResults.this, R.layout.rankings_text_view, arr);
+    private void displayJ1HistogramRankings() {
+        Scanner sc = new Scanner(getResources().openRawResource(R.raw.ixl_cardart_j1hist));
+        ArrayList<HistogramTuple> arr =  ImagePreprocessor.getJ1HistogramRanking(bmp, sc);
+        adapter = new ArrayAdapter(SearchResultsJH.this, R.layout.rankings_text_view, arr);
         ranking.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
         sc.close();
     }
 
@@ -114,7 +108,7 @@ public class SearchResults extends AppCompatActivity implements AdapterView.OnIt
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent(SearchResults.this, CardImage.class);
+        Intent intent = new Intent(SearchResultsJH.this, CardImage.class);
         HistogramTuple ht = (HistogramTuple) ranking.getItemAtPosition(position);
         String cardName = ht.getName();
         intent.putExtra("cardName", cardName);
